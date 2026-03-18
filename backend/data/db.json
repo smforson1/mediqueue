@@ -2,7 +2,8 @@
   "users": [
     {
       "id": "u1",
-      "username": "admin",
+      "username": "admin@mediqueue.com",
+      "email": "admin@mediqueue.com",
       "password": "password123",
       "name": "Clinic Admin",
       "role": "admin"
