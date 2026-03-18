@@ -1,6 +1,5 @@
 import "./App.css";
 import Button from "./components/common/Button";
-import heroImage from "./assets/hero.png";
 import {
   FiCalendar,
   FiCheckCircle,
