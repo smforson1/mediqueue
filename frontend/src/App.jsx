@@ -1,94 +1,155 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useState, useEffect } from "react";
 
 // Pages
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import BookingPage from './pages/BookingPage';
-import ConfirmationPage from './pages/ConfirmationPage';
-import PatientDashboard from './pages/PatientDashboard';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminQueueView from './pages/admin/AdminQueueView';
-import AdminSchedules from './pages/admin/AdminSchedules';
-import AdminPatients from './pages/admin/AdminPatients';
-import DoctorManagement from './pages/admin/DoctorManagement';
-import QueueStatus from './pages/QueueStatus';
-import ForgotPassword from './pages/ForgotPassword';
-import CheckEmail from './pages/CheckEmail';
-import ResetPassword from './pages/ResetPassword';
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Services from "./pages/Service";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import BookingPage from "./pages/BookingPage";
+import ConfirmationPage from "./pages/ConfirmationPage";
+import PatientDashboard from "./pages/PatientDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminQueueView from "./pages/admin/AdminQueueView";
+import AdminSchedules from "./pages/admin/AdminSchedules";
+import AdminPatients from "./pages/admin/AdminPatients";
+import DoctorManagement from "./pages/admin/DoctorManagement";
+import QueueStatus from "./pages/QueueStatus";
+import ForgotPassword from "./pages/ForgotPassword";
+import CheckEmail from "./pages/CheckEmail";
+import ResetPassword from "./pages/ResetPassword";
 
 // Components
-import Navbar from './components/common/Navbar';
+import Navbar from "./components/common/Navbar";
 
 function App() {
   const [user, setUser] = useState(null);
 
   // Simple auth check from localStorage
   useEffect(() => {
-    const savedUser = localStorage.getItem('mediqueue_user');
+    const savedUser = localStorage.getItem("mediqueue_user");
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
   }, []);
 
   const handleLogin = (userData) => {
-    localStorage.setItem('mediqueue_user', JSON.stringify(userData));
+    localStorage.setItem("mediqueue_user", JSON.stringify(userData));
     setUser(userData);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('mediqueue_user');
+    localStorage.removeItem("mediqueue_user");
     setUser(null);
   };
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="flex flex-col min-h-screen bg-white">
         {/* Only show Navbar if not logged in (since Dashboards have sidebars now) */}
         {!user && <Navbar user={user} onLogout={handleLogout} />}
-        
+
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-            <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
+            <Route
+              path="/login"
+              element={<LoginPage onLogin={handleLogin} />}
+            />
+            <Route
+              path="/register"
+              element={<RegisterPage onLogin={handleLogin} />}
+            />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/check-email" element={<CheckEmail />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<Services />} />
             {/* Protected Routes */}
-            <Route 
-              path="/dashboard" 
-              element={user ? (user.role === 'admin' ? <AdminDashboard onLogout={handleLogout} /> : <PatientDashboard user={user} onLogout={handleLogout} />) : <Navigate to="/login" />} 
+            <Route
+              path="/dashboard"
+              element={
+                user ? (
+                  user.role === "admin" ? (
+                    <AdminDashboard onLogout={handleLogout} />
+                  ) : (
+                    <PatientDashboard user={user} onLogout={handleLogout} />
+                  )
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
             />
-            
+
             {/* Pages without sidebars that still need navigation can use a simplified back button or keep the layout, but for now we follow the mockup */}
-            <Route path="/book" element={user ? <BookingPage user={user} /> : <Navigate to="/login" />} />
+            <Route
+              path="/book"
+              element={
+                user ? <BookingPage user={user} /> : <Navigate to="/login" />
+              }
+            />
             <Route path="/confirmation" element={<ConfirmationPage />} />
             <Route path="/queue" element={<QueueStatus />} />
-            
+
             {/* Admin specific */}
-            <Route 
-              path="/admin" 
-              element={user?.role === 'admin' ? <AdminDashboard onLogout={handleLogout} /> : <Navigate to="/dashboard" />} 
+            <Route
+              path="/admin"
+              element={
+                user?.role === "admin" ? (
+                  <AdminDashboard onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
             />
-            <Route 
-              path="/admin/queue" 
-              element={user?.role === 'admin' ? <AdminQueueView onLogout={handleLogout} /> : <Navigate to="/dashboard" />} 
+            <Route
+              path="/admin/queue"
+              element={
+                user?.role === "admin" ? (
+                  <AdminQueueView onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
             />
-            <Route 
-              path="/admin/schedules" 
-              element={user?.role === 'admin' ? <AdminSchedules onLogout={handleLogout} /> : <Navigate to="/dashboard" />} 
+            <Route
+              path="/admin/schedules"
+              element={
+                user?.role === "admin" ? (
+                  <AdminSchedules onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
             />
-            <Route 
-              path="/admin/patients" 
-              element={user?.role === 'admin' ? <AdminPatients onLogout={handleLogout} /> : <Navigate to="/dashboard" />} 
+            <Route
+              path="/admin/patients"
+              element={
+                user?.role === "admin" ? (
+                  <AdminPatients onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
             />
             {/* Keeping doctors route just in case */}
-            <Route 
-              path="/admin/doctors" 
-              element={user?.role === 'admin' ? <DoctorManagement /> : <Navigate to="/dashboard" />} 
+            <Route
+              path="/admin/doctors"
+              element={
+                user?.role === "admin" ? (
+                  <DoctorManagement />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
             />
           </Routes>
         </main>

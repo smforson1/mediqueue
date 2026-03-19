@@ -1,168 +1,268 @@
-import { Link } from 'react-router-dom';
-import { Calendar, Clock, UserCheck, ChevronRight, ShieldCheck, Mail, Phone, MapPin, PlayCircle, ClipboardList } from 'lucide-react';
+import Button from "../components/common/Button";
+import { Link } from "react-router-dom";
+import {
+  FiCalendar,
+  FiCheckCircle,
+  FiPlayCircle,
+  FiSearch,
+  FiShield,
+} from "react-icons/fi";
+import { RiTicket2Line } from "react-icons/ri";
+import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
+import { IoMdShare } from "react-icons/io";
+import { CiGlobe } from "react-icons/ci";
 
-const LandingPage = () => {
+function LandingPage() {
   return (
-    <div className="flex flex-col bg-[#fdfdfd]">
-      {/* Hero Section */}
-      <section className="pt-20 pb-20 px-4 md:px-8 max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center justify-between gap-12">
-        <div className="lg:w-1/2 flex flex-col items-start text-left">
-          <div className="bg-blue-50 text-primary px-4 py-1.5 rounded-full text-sm font-semibold mb-8">
+    <main className="w-full bg-[#f7f9ff] text-left">
+      <section className="grid w-full gap-10 px-4 pt-8 mx-auto max-w-7xl pb-14 md:grid-cols-2 md:px-8 md:pb-20 md:pt-14">
+        <div className="flex flex-col justify-center">
+          <span className="px-4 py-2 mb-6 text-xs font-semibold rounded-full w-fit bg-blue-50 text-primary">
             The Future of Healthcare Booking
-          </div>
-          <h1 className="text-5xl md:text-6xl font-black text-slate-800 leading-tight mb-6">
-            Smart Clinic <br/>
+          </span>
+
+          <h1 className="m-0 text-4xl font-bold leading-tight tracking-[-0.02em] text-slate-900 md:text-6xl">
+            Smart Clinic
+            <br />
             Bookings, <span className="text-primary">Simplified</span>
           </h1>
-          <p className="text-lg text-slate-600 mb-10 max-w-md leading-relaxed">
-            Say goodbye to long queues and paper logs. Manage your medical appointments effortlessly with our intuitive digital queuing system.
+
+          <p className="mt-6 max-w-[560px] text-lg leading-8 text-slate-600 md:text-xl">
+            Say goodbye to long queues and paper logs. Manage your medical
+            appointments effortlessly with our intuitive digital queuing system.
           </p>
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <Link to="/register" className="btn-primary px-8 py-3.5 rounded-md text-lg shadow-lg shadow-blue-200">
-              Book an Appointment Now
-            </Link>
-            <button className="flex items-center gap-2 text-slate-600 hover:text-primary font-medium transition-colors">
-              <PlayCircle className="w-6 h-6" />
-              See how it works
-            </button>
+
+          <div className="flex flex-wrap items-center gap-4 mt-10">
+            <Button
+              title="Book an Appointment Now"
+              className="rounded-lg bg-[#58b7de] px-7 py-3.5 text-base font-semibold text-white hover:bg-[#47a8cf]"
+            />
+
+            <Button
+              title="See how it works"
+              variant="ghost"
+              className="px-2 py-2 text-base font-medium text-slate-600 hover:bg-transparent"
+              leftIcon={<FiPlayCircle className="text-lg text-slate-500" />}
+            />
           </div>
-          
-          <div className="mt-12 flex items-center gap-4">
-            <div className="flex -space-x-3">
-              <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-200"></div>
-              <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-300"></div>
-              <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">+</div>
+
+          <div className="flex items-center gap-3 mt-10 text-sm text-slate-500">
+            <div className="flex -space-x-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#e8eefc] text-[10px] font-bold text-slate-600">
+                <img
+                  src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg"
+                  alt=""
+                  className="object-cover w-full h-full rounded-full"
+                />
+              </span>
+              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#fcefcf] text-[10px] font-bold text-slate-600">
+                <img
+                  src="https://images.pexels.com/photos/1133742/pexels-photo-1133742.jpeg"
+                  alt=""
+                  className="object-cover w-full h-full rounded-full"
+                />
+              </span>
+              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white bg-[#d6f4e6] text-[10px] font-bold text-slate-600">
+                <img
+                  src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
+                  alt=""
+                  className="object-cover w-full h-full rounded-full"
+                />
+              </span>
             </div>
-            <p className="text-sm font-medium text-slate-500">Trusted by 10,000+ patients</p>
+            <span>Trusted by 10,000+ patients</span>
           </div>
         </div>
-        
-        <div className="lg:w-1/2 relative">
-          {/* Decorative background blob */}
-          <div className="absolute inset-0 bg-blue-100 blur-3xl rounded-full opacity-60 transform scale-110"></div>
-          
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-teal-500 aspect-[4/3]">
-             {/* Note: User mockup shows a doctor image here. Using a placeholder color that matches. */}
-             <div className="absolute inset-0 flex items-center justify-center text-white/50 italic font-medium">
-               [Doctor Hero Image Placeholder]
-             </div>
+
+        <div className="relative flex items-center justify-center">
+          <div className="relative w-full max-w-[600px] max-h-[540px] overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-[0_18px_40px_-20px_rgba(44,84,170,0.45)]">
+            <img
+              src="https://images.pexels.com/photos/5452202/pexels-photo-5452202.jpeg"
+              alt="Doctor ready to assist with digital appointment bookings"
+              className="object-cover w-full h-full"
+            />
           </div>
-          
-          {/* Floating UI Card */}
-          <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-slate-100 flex items-center gap-4 animate-bounce" style={{ animationDuration: '3s' }}>
-            <div className="bg-green-100 p-2 rounded-full text-green-600">
-              <ShieldCheck size={20} />
-            </div>
+
+          <div className="absolute -bottom-5 left-4 flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-[0_16px_26px_-18px_rgba(15,23,42,0.6)] md:left-8">
+            <span className="p-2 rounded-full bg-emerald-100 text-emerald-600">
+              <FiCheckCircle className="text-base" />
+            </span>
             <div>
-              <p className="text-sm font-bold text-slate-800">Appointment Confirmed</p>
+              <p className="text-sm font-semibold text-slate-900">
+                Appointment Confirmed
+              </p>
               <p className="text-xs text-slate-500">Today at 10:00 AM</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How it works Section */}
-      <section className="py-24 px-4 bg-white border-t border-slate-50">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-teal-500 font-bold tracking-widest text-sm uppercase mb-3 text-[#2dd4bf]">SIMPLE PROCESS</p>
-          <h2 className="text-4xl font-black text-slate-900 mb-4">How MediQueue Works</h2>
-          <p className="text-slate-500 mb-20">Book your next visit in four simple steps and skip the waiting room entirely.</p>
+      <section className="py-16 bg-white md:py-24">
+        <div className="w-full px-4 mx-auto max-w-7xl md:px-8">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-[#42b6de]">
+            Simple Process
+          </p>
+          <h2 className="mt-3 text-3xl font-bold text-center text-slate-900 md:text-5xl">
+            How MediQueue Works
+          </h2>
+          <p className="mx-auto mt-4 max-w-[680px] text-center text-base text-slate-500 md:text-lg">
+            Book your next visit in four simple steps and skip the waiting room
+            entirely.
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
-            {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-8 left-1/8 right-1/8 h-0.5 bg-slate-100 -z-10"></div>
-            
-            <div className="flex flex-col items-center group">
-              <div className="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center text-xl font-bold mb-6 border border-white shadow-sm ring-4 ring-white group-hover:scale-110 transition-transform">1</div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Find Clinic</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-4">Search for nearby clinics or specific specialists in our extensive network.</p>
-            </div>
-            
-            <div className="flex flex-col items-center group">
-              <div className="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-xl font-bold mb-6 border border-white shadow-sm ring-4 ring-white group-hover:scale-110 transition-transform">2</div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Pick Slot</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-4">Choose a time that fits your schedule from the live availability calendar.</p>
-            </div>
-            
-            <div className="flex flex-col items-center group">
-              <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-xl font-bold mb-6 border border-white shadow-sm ring-4 ring-white group-hover:scale-110 transition-transform">3</div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Get Queue ID</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-4">Receive a digital token and real-time updates on your wait status.</p>
-            </div>
-            
-            <div className="flex flex-col items-center group">
-              <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-xl font-bold mb-6 border border-white shadow-sm ring-4 ring-white group-hover:scale-110 transition-transform">4</div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3">Visit & Heal</h3>
-              <p className="text-slate-500 text-sm leading-relaxed px-4">Arrive just in time for your turn. No more crowded waiting rooms!</p>
-            </div>
+          <div className="grid gap-8 mt-14 sm:grid-cols-2 lg:grid-cols-4">
+            <article className="text-center">
+              <div className="flex items-center justify-center mx-auto mb-5 h-14 w-14 rounded-2xl bg-blue-50 text-primary">
+                <FiSearch className="text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900">Find Clinic</h3>
+              <p className="mt-3 text-base leading-7 text-slate-500">
+                Search for nearby clinics or specific specialists in our
+                extensive network.
+              </p>
+            </article>
+
+            <article className="text-center">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-50 text-[#42b6de]">
+                <FiCalendar className="text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900">Pick Slot</h3>
+              <p className="mt-3 text-base leading-7 text-slate-500">
+                Choose a time that fits your schedule from the live availability
+                calendar.
+              </p>
+            </article>
+
+            <article className="text-center">
+              <div className="flex items-center justify-center mx-auto mb-5 text-indigo-500 h-14 w-14 rounded-2xl bg-indigo-50">
+                <RiTicket2Line className="text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900">
+                Get Queue ID
+              </h3>
+              <p className="mt-3 text-base leading-7 text-slate-500">
+                Receive a digital token and real-time updates on your wait
+                status.
+              </p>
+            </article>
+
+            <article className="text-center">
+              <div className="flex items-center justify-center mx-auto mb-5 h-14 w-14 rounded-2xl bg-emerald-50 text-emerald-500">
+                <FiShield className="text-xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900">
+                Visit & Heal
+              </h3>
+              <p className="mt-3 text-base leading-7 text-slate-500">
+                Arrive just in time for your turn. No more crowded waiting
+                rooms!
+              </p>
+            </article>
           </div>
         </div>
       </section>
+      <footer className="mt-auto bg-[#081633] text-slate-300">
+        <div className="w-full px-4 py-12 mx-auto max-w-7xl md:px-8">
+          <div className="grid gap-10 md:grid-cols-3">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-[#0A7CFF] text-white">
+                  <img src="/public/logo-no-bg.png" alt="" />
+                </span>
+                <span className="text-2xl font-bold text-white">MediQueue</span>
+              </div>
 
-      {/* Dark Footer aligned with mockup */}
-      <footer className="bg-[#1e2330] text-slate-400 py-16 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-slate-700/50 pb-12 mb-8">
-          <div className="col-span-1 md:col-span-2 lg:col-span-1">
-             <Link to="/" className="flex items-center space-x-2 text-white mb-6">
-                <div className="bg-primary text-white p-1 rounded">
-                   <ClipboardList className="w-6 h-6" />
+              <p className="mt-4 text-left max-w-[280px] text-sm leading-7 text-slate-400">
+                Modernizing healthcare access through smart, efficient, and
+                patient-centered digital queuing solutions.
+              </p>
+
+              <div className="flex items-center gap-2 mt-6">
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-8 h-8 transition rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  aria-label="share"
+                >
+                  <IoMdShare />
+                </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-8 h-8 transition rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  aria-label="globe"
+                >
+                  <CiGlobe />
+                </button>
+              </div>
+            </div>
+
+            <div className="">
+              <h4 className="text-xl font-semibold text-white text-start">
+                Quick Links
+              </h4>
+              <div className="grid grid-cols-2 mt-4 text-sm gap-y-3">
+                <div className="flex flex-col items-start gap-2">
+                  <Link to="/" className="transition hover:text-white">
+                    Home
+                  </Link>
+                  <Link to="/about" className="transition hover:text-white">
+                    About Us
+                  </Link>
+                  <Link to="/contact" className="transition hover:text-white">
+                    Contact
+                  </Link>{" "}
+                  <Link
+                    to="/terms"
+                    className="col-span-2 transition hover:text-white"
+                  >
+                    Terms of Service
+                  </Link>
                 </div>
-                <span className="text-xl font-bold tracking-tight">MediQueue</span>
-             </Link>
-             <p className="text-sm leading-relaxed mb-6">
-                Modernizing healthcare access through smart, efficient, and patient-centered digital queuing solutions.
-             </p>
-             <div className="flex gap-4 border-t border-slate-700 pt-4 w-fit">
-                {/* Social icons placeholders */}
-                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer transition-colors">&lt;</div>
-                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer transition-colors">&gt;</div>
-             </div>
-          </div>
-          
-          <div>
-            <h4 className="text-white font-bold mb-6">Quick Links</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-              <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-              <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-transparent selection:text-white mb-6">&nbsp;</h4> {/* Spacer to align with Quick links */}
-            <ul className="space-y-3 text-sm">
-               <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-               <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-               <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-            </ul>
+                <div className="flex flex-col items-start gap-2">
+                  {" "}
+                  <Link to="/pricing" className="transition hover:text-white">
+                    Pricing
+                  </Link>
+                  <Link to="/faq" className="transition hover:text-white">
+                    FAQ
+                  </Link>
+                  <Link to="/privacy" className="transition hover:text-white">
+                    Privacy Policy
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-xl font-semibold text-white text-start">
+                Contact Us
+              </h4>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li className="flex items-start gap-3">
+                  <FiMail className="mt-0.5 text-[#00B5FF]" />
+                  <span>hello@mediqueue.com</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <FiPhone className="mt-0.5 text-[#00B5FF]" />
+                  <span>(555) 123-4567</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <FiMapPin className="mt-0.5 text-[#00B5FF]" />
+                  <span className="flex flex-col items-start">
+                    123 Health Ave, Medical District,
+                    <span>Innovation City, IN 10001</span>{" "}
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div>
-             <h4 className="text-white font-bold mb-6">Contact Us</h4>
-             <ul className="space-y-4 text-sm">
-                <li className="flex items-start gap-3">
-                   <Mail className="w-5 h-5 text-slate-500 shrink-0" />
-                   <a href="mailto:hello@mediqueue.com" className="hover:text-white transition-colors">hello@mediqueue.com</a>
-                </li>
-                <li className="flex items-start gap-3">
-                   <Phone className="w-5 h-5 text-slate-500 shrink-0" />
-                   <span>(555) 123-4567</span>
-                </li>
-                <li className="flex items-start gap-3">
-                   <MapPin className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />
-                   <span className="leading-relaxed">123 Health Ave, Medical District<br/>Innovation City, IN 10001</span>
-                </li>
-             </ul>
+          <div className="pt-6 mt-10 text-xs text-center border-t border-slate-800 text-slate-500">
+            <p>© 2023 MediQueue Systems. All rights reserved.</p>
           </div>
-        </div>
-        
-        <div className="text-center text-xs text-slate-500">
-          &copy; {new Date().getFullYear()} MediQueue Systems. All rights reserved.
         </div>
       </footer>
-    </div>
+    </main>
   );
-};
+}
 
 export default LandingPage;
