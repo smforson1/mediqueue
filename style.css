@@ -1,0 +1,72 @@
+:root {
+    /* User Defined Color Scheme */
+    --primary: #344EC5;
+    --secondary: #2a3db0;
+    --light-theme: #fefeff;
+    --dark-theme: #131826;
+    --button-blue: #0052CC;
+    --text-blue: #344EC5;
+
+    /* Functional Colors from Mockup */
+    --danger-red: #ff0000; /* cite: 13 */
+    --success-green: #28a745; /* cite: 7 */
+    --accent-grey: #f4f4f4; /* cite: 7 */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif; /* cite: 7 */
+    background-color: var(--light-theme);
+    color: var(--dark-theme);
+    transition: all 0.3s ease;
+}
+
+/* Navigation Bar - Primary Color  */
+.navbar {
+    background-color: var(--primary);
+    color: white;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Typography [cite: 65, 66] */
+h1 { color: var(--text-blue); font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+h2 { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+
+/* Card-based Layout [cite: 11] */
+.container { padding: 40px 5%; }
+.card {
+    background: white;
+    border: 1px solid var(--accent-grey);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Primary Action Buttons  */
+.btn-primary {
+    background-color: var(--button-blue);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-danger { background-color: var(--danger-red); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+
+/* Theme Support */
+body.dark-mode {
+    background-color: var(--dark-theme);
+    color: var(--light-theme);
+}
+body.dark-mode .card { background: #1c2237; border-color: #2a3db0; }
