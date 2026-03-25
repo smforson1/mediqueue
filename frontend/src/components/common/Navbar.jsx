@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { LogOut, User, Calendar, Menu, X, ClipboardList } from "lucide-react";
+import { LogOut, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 import Button from "./Button";
 
@@ -20,27 +20,35 @@ const Navbar = ({ user, onLogout }) => {
       path === "/"
         ? location.pathname === "/"
         : location.pathname.startsWith(path);
+
     if (isMobile) {
-      return `block px-3 py-2 rounded-md transition-colors ${isActive ? "bg-primary-dark font-bold text-white" : "text-blue-100 hover:bg-blue-700 hover:text-white"}`;
+      return `block px-3 py-2 rounded-md transition-colors ${
+        isActive
+          ? "bg-primary-dark font-bold text-white"
+          : "text-blue-100 hover:bg-blue-700 hover:text-white"
+      }`;
     }
-    return `transition-all flex items-center gap-1 py-1 ${isActive ? "text-white font-bold border-b-2 border-white" : "text-blue-100 hover:text-white border-b-2 border-transparent"}`;
+
+    return `transition-all flex items-center gap-1 py-1 ${
+      isActive
+        ? "text-white font-bold border-b-2 border-white"
+        : "text-blue-100 hover:text-white border-b-2 border-transparent"
+    }`;
   };
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b text-slate-700 border-slate-100">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <div className="flex items-center gap-3 cursor-pointer">
+          <Link to="/" className="flex items-center gap-3 cursor-pointer">
             <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-2xl rounded-lg bg-buttonBlue lg:h-10 lg:w-10">
-              <img src="/public/logo-no-bg.png" alt="logo" />
+              <img src="/logo-no-bg.png" alt="logo" />
             </div>
             <span className="text-xl text-textBlue font-bold tracking-[-0.4px] text-[var(--text-h)] md:text-xl">
               MediQueue
             </span>
-          </div>
+          </Link>
 
-          {/* Desktop Navigation */}
           <div className="items-center hidden space-x-8 font-medium md:flex">
             <Link to="/" className="transition-colors hover:text-primary">
               Home
@@ -48,17 +56,14 @@ const Navbar = ({ user, onLogout }) => {
             <Link to="/about" className="transition-colors hover:text-primary">
               About
             </Link>
-            <Link
-              to="/services"
-              className="transition-colors hover:text-primary"
-            >
+            <Link to="/services" className="transition-colors hover:text-primary">
               Services
             </Link>
-            <Link
-              to="/contact"
-              className="transition-colors hover:text-primary"
-            >
+            <Link to="/contact" className="transition-colors hover:text-primary">
               Contact
+            </Link>
+            <Link to="/faq" className="transition-colors hover:text-primary">
+              FAQ
             </Link>
 
             {user ? (
@@ -70,6 +75,7 @@ const Navbar = ({ user, onLogout }) => {
                   <User size={18} />
                   Dashboard
                 </Link>
+
                 {user.role === "patient" && (
                   <Link
                     to="/book"
@@ -78,6 +84,7 @@ const Navbar = ({ user, onLogout }) => {
                     Book Appointment
                   </Link>
                 )}
+
                 <button
                   onClick={handleLogoutClick}
                   className="flex items-center gap-1 transition-colors text-slate-500 hover:text-red-500"
@@ -104,7 +111,6 @@ const Navbar = ({ user, onLogout }) => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">
             <button
               onClick={toggleMenu}
@@ -116,18 +122,13 @@ const Navbar = ({ user, onLogout }) => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <div
         className={`border-t border-blue-400 md:hidden bg-primary-dark overflow-hidden transition-all duration-300 ease-in-out ${
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <Link
-            to="/"
-            onClick={toggleMenu}
-            className={getLinkClass("/", true)}
-          >
+          <Link to="/" onClick={toggleMenu} className={getLinkClass("/", true)}>
             Home
           </Link>
           <Link
@@ -137,6 +138,14 @@ const Navbar = ({ user, onLogout }) => {
           >
             Live Queue
           </Link>
+          <Link
+            to="/faq"
+            onClick={toggleMenu}
+            className={getLinkClass("/faq", true)}
+          >
+            FAQ
+          </Link>
+
           {user ? (
             <>
               <Link
@@ -146,6 +155,7 @@ const Navbar = ({ user, onLogout }) => {
               >
                 Dashboard
               </Link>
+
               {user.role === "patient" && (
                 <Link
                   to="/book"
@@ -155,6 +165,7 @@ const Navbar = ({ user, onLogout }) => {
                   Book Appointment
                 </Link>
               )}
+
               <button
                 onClick={() => {
                   handleLogoutClick();

@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 // Pages
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Services from "./pages/Service";
+import Services from "./pages/Service"; 
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -25,6 +25,7 @@ import QueueStatus from "./pages/QueueStatus";
 import ForgotPassword from "./pages/ForgotPassword";
 import CheckEmail from "./pages/CheckEmail";
 import ResetPassword from "./pages/ResetPassword";
+import FAQ from "./pages/FAQ";
 
 // Components
 import Navbar from "./components/common/Navbar";
@@ -32,7 +33,6 @@ import Navbar from "./components/common/Navbar";
 function App() {
   const [user, setUser] = useState(null);
 
-  // Simple auth check from localStorage
   useEffect(() => {
     const savedUser = localStorage.getItem("mediqueue_user");
     if (savedUser) {
@@ -53,27 +53,23 @@ function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-white">
-        {/* Only show Navbar if not logged in (since Dashboards have sidebars now) */}
         {!user && <Navbar user={user} onLogout={handleLogout} />}
 
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route
-              path="/login"
-              element={<LoginPage onLogin={handleLogin} />}
-            />
-            <Route
-              path="/register"
-              element={<RegisterPage onLogin={handleLogin} />}
-            />
+            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/check-email" element={<CheckEmail />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/services" element={<Services />} />
-            {/* Protected Routes */}
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/queue" element={<QueueStatus />} />
+            <Route path="/confirmation" element={<ConfirmationPage />} />
+
             <Route
               path="/dashboard"
               element={
@@ -89,17 +85,13 @@ function App() {
               }
             />
 
-            {/* Pages without sidebars that still need navigation can use a simplified back button or keep the layout, but for now we follow the mockup */}
             <Route
               path="/book"
               element={
                 user ? <BookingPage user={user} /> : <Navigate to="/login" />
               }
             />
-            <Route path="/confirmation" element={<ConfirmationPage />} />
-            <Route path="/queue" element={<QueueStatus />} />
 
-            {/* Admin specific */}
             <Route
               path="/admin"
               element={
@@ -140,7 +132,6 @@ function App() {
                 )
               }
             />
-            {/* Keeping doctors route just in case */}
             <Route
               path="/admin/doctors"
               element={
