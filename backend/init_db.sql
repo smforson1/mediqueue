@@ -39,9 +39,17 @@ CREATE TABLE IF NOT EXISTS notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id),
     message TEXT NOT NULL,
+    type TEXT DEFAULT 'general', -- 'general', 'called', 'confirmed', 'cancelled'
     read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Migration: Run these if the tables already exist in Supabase
+-- ALTER TABLE notifications ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'general';
+-- ALTER TABLE notifications ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+-- ALTER TABLE appointments ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'confirmed'; -- already exists
+-- UPDATE appointments SET status = 'confirmed' WHERE status IS NULL;
 
 -- Seed Data
 INSERT INTO doctors (name, specialty, experience, available_days) VALUES 

@@ -10,7 +10,7 @@ const ConfirmationPage = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+    <div className="max-w-2xl mx-auto px-4 py-24 text-center">
       <div className="bg-white rounded-medical shadow-medical p-10 border border-slate-100">
         <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 text-secondary-green rounded-full mb-8">
           <CheckCircle2 size={48} />

@@ -141,6 +141,63 @@ app.patch('/api/doctors/:id', async (req, res) => {
   res.json(mapToCamel(data));
 });
 
+// 2c. Doctors: Create New
+app.post('/api/doctors', async (req, res) => {
+  const { name, specialty, experience } = req.body;
+  if (!name || !specialty) return res.status(400).json({ message: 'Name and specialty are required.' });
+
+  const { data, error } = await supabase
+    .from('doctors')
+    .insert([{ name, specialty, experience, available_days: [] }])
+    .select()
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json(mapToCamel(data));
+});
+
+// 2d. Doctors: Delete Staff
+app.delete('/api/doctors/:id', async (req, res) => {
+  const { id } = req.params;
+  
+  // First, check if there are appointments for this doctor
+  const { data: hasAppts } = await supabase
+    .from('appointments')
+    .select('id')
+    .eq('doctor_id', id)
+    .limit(1);
+
+  if (hasAppts && hasAppts.length > 0) {
+    return res.status(400).json({ message: 'Cannot delete doctor with active appointments.' });
+  }
+
+  const { error } = await supabase
+    .from('doctors')
+    .delete()
+    .eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ message: 'Staff member removed successfully.' });
+});
+
+// 2e. Doctors: Check Booked Slots
+app.get('/api/appointments/booked', async (req, res) => {
+  const { doctorId, date } = req.query;
+  if (!doctorId || !date) return res.status(400).json({ message: 'doctorId and date are required.' });
+
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('time')
+    .eq('doctor_id', doctorId)
+    .eq('date', date)
+    .neq('status', 'cancelled'); // Don't count cancelled appointments
+
+  if (error) return res.status(500).json({ error: error.message });
+  
+  const bookedTimes = data.map(appt => appt.time);
+  res.json({ bookedTimes });
+});
+
 // 3. Appointments: List with filters
 app.get('/api/appointments', async (req, res) => {
   let query = supabase.from('appointments').select('*');
@@ -157,24 +214,35 @@ app.get('/api/appointments', async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
 
   // Manual join - fetch users and doctors for enriched names
-  const { data: users, error: usersError } = await supabase.from('users').select('id, name, email, phone, username');
-  const { data: doctors } = await supabase.from('doctors').select('id, name, specialty');
+  const { data: users, error: userErr } = await supabase.from('users').select('id, name, phone, username');
+  const { data: doctors, error: docErr } = await supabase.from('doctors').select('id, name, specialty');
   
-  const enrichedAppts = (appts || []).map(appt => {
-    // Explicit string coercion to avoid type-mismatch with UUIDs
-    const user = (users || []).find(u => String(u.id) === String(appt.patient_id));
-    const doctor = (doctors || []).find(d => String(d.id) === String(appt.doctor_id));
-    
-    const patientName = user ? (user.name || user.username) : 'Unknown Patient';
-    const doctorName = doctor ? doctor.name : 'Unknown Doctor';
+  if (userErr || docErr) console.error('Enrichment fetch error:', userErr || docErr);
 
+  const enrichedAppts = (appts || []).map(appt => {
+    // Robust UUID matching
+    const patientRel = (users || []).find(u => String(u.id).toLowerCase() === String(appt.patient_id).toLowerCase());
+    const doctorRel = (doctors || []).find(d => String(d.id).toLowerCase() === String(appt.doctor_id).toLowerCase());
+    
+    // Improved name resolution chain
+    let patientName = 'Unknown Patient';
+    if (patientRel) {
+      if (patientRel.name && patientRel.name.trim().length > 0) {
+        patientName = patientRel.name.trim();
+      } else if (patientRel.username && patientRel.username.trim().length > 0) {
+        // If username is an email (from registration), split it
+        const raw = patientRel.username.trim();
+        patientName = raw.includes('@') ? raw.split('@')[0] : raw;
+      }
+    }
+    
     return {
       ...appt,
       patient_name: patientName,
-      patient_email: user?.email || user?.username,
-      patient_phone: user?.phone,
-      doctor_name: doctorName,
-      doctor_specialty: doctor?.specialty
+      patient_email: patientRel?.username, // username column holds the email
+      patient_phone: patientRel?.phone,
+      doctor_name: doctorRel ? doctorRel.name : 'Unknown Doctor',
+      doctor_specialty: doctorRel?.specialty
     };
   });
 
@@ -251,6 +319,110 @@ app.patch('/api/appointments/:id', async (req, res) => {
   res.json(data);
 });
 
+// 5b. Call Patient — marks them as 'in_progress' and sends a live notification
+app.post('/api/appointments/:id/call', async (req, res) => {
+  const { id } = req.params;
+
+  // Get the appointment to find patient + doctor info
+  const { data: appt, error: apptErr } = await supabase
+    .from('appointments')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (apptErr || !appt) return res.status(404).json({ message: 'Appointment not found.' });
+
+  // Update appointment status to in_progress
+  await supabase
+    .from('appointments')
+    .update({ status: 'in_progress' })
+    .eq('id', id);
+
+  // Get doctor name
+  const { data: doctor } = await supabase
+    .from('doctors')
+    .select('name')
+    .eq('id', appt.doctor_id)
+    .single();
+
+  // Insert a "called" notification for the patient
+  const { error: notifErr } = await supabase
+    .from('notifications')
+    .insert([{
+      user_id: appt.patient_id,
+      message: `🔔 It's your turn! Please proceed to see ${doctor?.name || 'your doctor'} now.`,
+      type: 'called',
+      read: false
+    }]);
+
+  if (notifErr) return res.status(500).json({ error: notifErr.message });
+  res.json({ success: true, message: 'Patient called successfully.' });
+});
+
+// 5c. Check if patient has been called (for live polling)
+app.get('/api/notifications/called', async (req, res) => {
+  const { userId } = req.query;
+  if (!userId) return res.status(400).json({ message: 'userId is required' });
+
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('type', 'called')
+    .eq('read', false)
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ called: data && data.length > 0, notification: data?.[0] || null });
+});
+
+// 5d. Mark notification as read (dismiss)
+app.patch('/api/notifications/:id/read', async (req, res) => {
+  const { error } = await supabase
+    .from('notifications')
+    .update({ read: true })
+    .eq('id', req.params.id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// 5e. Complete/Terminate appointment — removes it from the active queue
+app.post('/api/appointments/:id/complete', async (req, res) => {
+  const { id } = req.params;
+
+  const { data: appt, error: apptErr } = await supabase
+    .from('appointments')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (apptErr || !appt) return res.status(404).json({ message: 'Appointment not found.' });
+
+  // Mark as completed
+  await supabase
+    .from('appointments')
+    .update({ status: 'completed' })
+    .eq('id', id);
+
+  // Send a completion notification to the patient
+  const { data: doctor } = await supabase
+    .from('doctors')
+    .select('name')
+    .eq('id', appt.doctor_id)
+    .single();
+
+  await supabase.from('notifications').insert([{
+    user_id: appt.patient_id,
+    message: `✅ Your appointment with ${doctor?.name || 'your doctor'} has been completed. Thank you for visiting!`,
+    type: 'general',
+    read: false
+  }]);
+
+  res.json({ success: true, message: 'Appointment marked as completed.' });
+});
+
 // 6. Stats: Aggregates
 app.get('/api/stats', async (req, res) => {
   const { data: appts, error } = await supabase.from('appointments').select('status');
@@ -262,6 +434,7 @@ app.get('/api/stats', async (req, res) => {
     confirmed: appts.filter(a => a.status === 'confirmed').length,
     pending: appts.filter(a => a.status === 'pending').length,
     cancelled: appts.filter(a => a.status === 'cancelled').length,
+    completed: appts.filter(a => a.status === 'completed').length,
   });
 });
 

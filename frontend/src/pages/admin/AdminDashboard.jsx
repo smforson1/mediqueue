@@ -7,6 +7,7 @@ const AdminDashboard = ({ onLogout }) => {
   const [stats, setStats] = useState(null);
   const [queue, setQueue] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [callingId, setCallingId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,9 +19,9 @@ const AdminDashboard = ({ onLogout }) => {
       // Fetch Stats
       const statsRes = await axios.get('http://localhost:5000/api/stats');
       setStats({
-        waiting: statsRes.data.confirmed, // Confirmed appointments are 'Waiting'
+        waiting: statsRes.data.confirmed, 
         appts: statsRes.data.totalBookings,
-        completed: 0, // Mock for now until we add 'completed' status
+        completed: statsRes.data.completed, 
         cancelled: statsRes.data.cancelled
       });
 
@@ -29,20 +30,41 @@ const AdminDashboard = ({ onLogout }) => {
       // but ideally this is new Date().toISOString().split('T')[0]
       const apptsRes = await axios.get('http://localhost:5000/api/appointments');
       
-      const activeAppts = apptsRes.data.filter(a => a.status === 'confirmed');
+      const activeAppts = apptsRes.data.filter(a => a.status === 'confirmed' || a.status === 'in_progress');
       const pendingAppts = apptsRes.data.filter(a => a.status === 'pending');
       
       setQueue(activeAppts.map(a => ({
         id: a.id,
         name: a.patientName || 'Unknown',
         time: a.time,
-        status: 'Waiting' // Defaulting to Waiting for simplicity
+        status: a.status === 'in_progress' ? 'In Progress' : 'Waiting'
       })));
 
       setPendingRequests(pendingAppts);
 
     } catch (err) {
       console.error('Failed to fetch dashboard data', err);
+    }
+  };
+
+  const handleCallPatient = async (pat) => {
+    setCallingId(pat.id);
+    try {
+      await axios.post(`http://localhost:5000/api/appointments/${pat.id}/call`);
+      await fetchDashboardData();
+    } catch (err) {
+      console.error('Failed to call patient', err);
+    } finally {
+      setCallingId(null);
+    }
+  };
+
+  const handleCompleteAppointment = async (apptId) => {
+    try {
+      await axios.post(`http://localhost:5000/api/appointments/${apptId}/complete`);
+      await fetchDashboardData();
+    } catch (err) {
+      console.error('Failed to complete appointment', err);
     }
   };
 
@@ -182,12 +204,36 @@ const AdminDashboard = ({ onLogout }) => {
                           )}
                         </td>
                         <td className="py-5 text-right flex items-center justify-end gap-2">
-                          <button className="bg-white border border-slate-200 text-slate-600 px-3 py-1.5 rounded-md text-xs font-bold hover:bg-slate-50">
-                            Edit
-                          </button>
-                          <button className="bg-blue-600 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm shadow-blue-200 hover:bg-blue-700">
-                            Call
-                          </button>
+                          {pat.status === 'In Progress' ? (
+                            <div className="flex items-center gap-2">
+                              <span className="inline-flex items-center gap-1 text-xs text-green-600 font-bold">
+                                <CheckCircle2 size={13} /> Called
+                              </span>
+                              <button
+                                onClick={() => handleCompleteAppointment(pat.id)}
+                                className="bg-slate-800 text-white px-3 py-1.5 rounded-md text-xs font-bold hover:bg-slate-900 transition-all"
+                              >
+                                Complete
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleCallPatient(pat)}
+                                disabled={callingId === pat.id}
+                                className="bg-blue-600 disabled:bg-blue-400 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm shadow-blue-200 hover:bg-blue-700 flex items-center gap-1.5 transition-all"
+                              >
+                                <Phone size={12} />
+                                {callingId === pat.id ? 'Calling...' : 'Call'}
+                              </button>
+                              <button
+                                onClick={() => handleCompleteAppointment(pat.id)}
+                                className="bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-md text-xs font-bold transition-all"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}
