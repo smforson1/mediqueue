@@ -34,6 +34,7 @@ function LandingPage() {
 
           <div className="flex flex-wrap items-center gap-4 mt-10">
             <Button
+              to="/register"
               title="Book an Appointment Now"
               className="rounded-lg bg-[#58b7de] px-7 py-3.5 text-base font-semibold text-white hover:bg-[#47a8cf]"
             />
