@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const LoginPage = ({ onLogin }) => {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -20,7 +20,7 @@ const LoginPage = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await api.post('/api/auth/login', formData);
       onLogin(response.data);
       navigate('/dashboard');
     } catch (err) {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, FolderOpen, LogOut, ChevronLeft, ChevronRight, ChevronDown, Clock, MapPin, Plus, UserCircle2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api';
 
 const AdminSchedules = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -29,8 +29,8 @@ const AdminSchedules = ({ onLogout }) => {
     const fetchData = async () => {
       try {
         const [docsRes, apptsRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/doctors'),
-          axios.get('http://localhost:5000/api/appointments')
+          api.get('/api/doctors'),
+          api.get('/api/appointments')
         ]);
         setDoctors(docsRes.data);
         setAppointments(apptsRes.data.filter(a => a.status !== 'cancelled'));
@@ -62,7 +62,7 @@ const AdminSchedules = ({ onLogout }) => {
     if (!activeDoctor) return;
     setIsSaving(true);
     try {
-      await axios.patch(`http://localhost:5000/api/doctors/${activeDoctor}`, {
+      await api.patch(`/api/doctors/${activeDoctor}`, {
         available_days: activeScheduleDays
       });
       

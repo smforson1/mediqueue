@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Plus, Trash2, Edit2, Save, X, Clock, User, AlertCircle, CheckCircle2, Loader2, UserCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 
 const DoctorManagement = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const DoctorManagement = ({ onLogout }) => {
   const fetchDoctors = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/doctors');
+      const response = await api.get('/api/doctors');
       setDoctors(response.data);
       if (response.data.length > 0 && !selectedDoctor) {
         setSelectedDoctor(response.data[0]);
@@ -44,7 +44,7 @@ const DoctorManagement = ({ onLogout }) => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/doctors', newDoc);
+      const res = await api.post('/api/doctors', newDoc);
       setDoctors([...doctors, res.data]);
       setSuccessMsg('Doctor added successfully!');
       setNewDoc({ name: '', specialty: '', experience: '' });
@@ -60,7 +60,7 @@ const DoctorManagement = ({ onLogout }) => {
     
     setIsDeleting(true);
     try {
-      await axios.delete(`http://localhost:5000/api/doctors/${id}`);
+      await api.delete(`/api/doctors/${id}`);
       setDoctors(doctors.filter(d => d.id !== id));
       if (selectedDoctor?.id === id) {
         setSelectedDoctor(doctors.find(d => d.id !== id) || null);

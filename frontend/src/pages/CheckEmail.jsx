@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { useState } from 'react';
 
 const BG_URL = 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1400&q=80';
@@ -15,7 +15,7 @@ const CheckEmail = () => {
     setResending(true);
     setResentMsg('');
     try {
-      await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      await api.post('/api/auth/forgot-password', { email });
       setResentMsg('Reset link resent! Please check your inbox.');
     } catch {
       setResentMsg('Failed to resend. Please try again.');

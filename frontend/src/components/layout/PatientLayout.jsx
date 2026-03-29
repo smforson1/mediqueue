@@ -4,7 +4,7 @@ import {
   Calendar, Clock, User, LogOut, LayoutDashboard, PlusCircle, 
   Menu, X, CheckCircle2, BellRing, UserCircle2, ChevronRight, HelpCircle
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api';
 
 const PatientLayout = ({ user, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,7 +17,7 @@ const PatientLayout = ({ user, onLogout }) => {
   const checkIfCalled = useCallback(async () => {
     if (!user?.id) return;
     try {
-      const res = await axios.get(`http://localhost:5000/api/notifications/called?userId=${user.id}`);
+      const res = await api.get(`/api/notifications/called?userId=${user.id}`);
       if (res.data.called && res.data.notification) {
         setCalledNotification(res.data.notification);
       }
@@ -36,7 +36,7 @@ const PatientLayout = ({ user, onLogout }) => {
     if (!calledNotification) return;
     setIsDismissing(true);
     try {
-      await axios.patch(`http://localhost:5000/api/notifications/${calledNotification.id}/read`);
+      await api.patch(`/api/notifications/${calledNotification.id}/read`);
       setCalledNotification(null);
     } catch (err) {
       console.error('Failed to dismiss notification', err);

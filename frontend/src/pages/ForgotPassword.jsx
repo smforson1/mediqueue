@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 // Hospital hallway background matching the mockup
 const BG_URL = 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1400&q=80';
@@ -18,7 +18,7 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      await api.post('/api/auth/forgot-password', { email });
       navigate('/check-email', { state: { email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong. Please try again.');

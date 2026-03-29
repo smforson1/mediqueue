@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, FolderOpen, LogOut, Search, UserPlus, Edit3, ClipboardList, Plus, UserCircle2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api';
 
 const AdminPatients = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ const AdminPatients = ({ onLogout }) => {
     const fetchData = async () => {
       try {
         const [patRes, appRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/users/patients'),
-          axios.get('http://localhost:5000/api/appointments')
+          api.get('/api/users/patients'),
+          api.get('/api/appointments')
         ]);
         setPatients(patRes.data);
         setAppointments(appRes.data);

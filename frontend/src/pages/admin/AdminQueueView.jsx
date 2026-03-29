@@ -5,7 +5,7 @@ import {
   Search, Printer, Download, ChevronDown, UserCircle2,
   Phone, RefreshCw, CheckCircle, Clock, AlertCircle
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api';
 
 const AdminQueueView = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -22,8 +22,8 @@ const AdminQueueView = ({ onLogout }) => {
     if (!silent) setIsRefreshing(true);
     try {
       const [docsRes, apptsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/doctors'),
-        axios.get('http://localhost:5000/api/appointments')
+        api.get('/api/doctors'),
+        api.get('/api/appointments')
       ]);
       setDoctors(docsRes.data);
       setQueue(apptsRes.data.filter(a => a.status !== 'cancelled'));
@@ -45,7 +45,7 @@ const AdminQueueView = ({ onLogout }) => {
   const handleCallPatient = async (appt) => {
     setCallingId(appt.id);
     try {
-      await axios.post(`http://localhost:5000/api/appointments/${appt.id}/call`);
+      await api.post(`/api/appointments/${appt.id}/call`);
       setCallSuccess({ id: appt.id, name: appt.patientName });
       // Refresh queue to reflect new status
       await fetchData(true);
@@ -60,7 +60,7 @@ const AdminQueueView = ({ onLogout }) => {
 
   const handleCompleteAppointment = async (apptId) => {
     try {
-      await axios.post(`http://localhost:5000/api/appointments/${apptId}/complete`);
+      await api.post(`/api/appointments/${apptId}/complete`);
       await fetchData(true);
     } catch (err) {
       console.error('Failed to complete appointment', err);

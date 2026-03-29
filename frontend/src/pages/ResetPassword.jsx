@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 const BG_URL = 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1400&q=80';
 
@@ -32,7 +32,7 @@ const ResetPassword = () => {
     setError('');
 
     try {
-      await axios.post('http://localhost:5000/api/auth/reset-password', { token, newPassword });
+      await api.post('/api/auth/reset-password', { token, newPassword });
       navigate('/login', { state: { message: 'Password updated successfully! Please log in.' } });
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to reset password. The link may be expired.');

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, PlusCircle, CheckCircle2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const PatientDashboard = ({ user }) => {
   const [appointments, setAppointments] = useState([]);
@@ -14,7 +14,7 @@ const PatientDashboard = ({ user }) => {
   const fetchAppointments = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/appointments?patientId=${user?.id}&status=confirmed`);
+      const response = await api.get(`/api/appointments?patientId=${user?.id}&status=confirmed`);
       const sorted = (response.data || []).sort((a, b) => new Date(a.date) - new Date(b.date));
       setAppointments(sorted);
     } catch (err) {

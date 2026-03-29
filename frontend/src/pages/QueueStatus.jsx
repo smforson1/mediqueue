@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Clock, Users, ArrowRight, PlayCircle, SkipForward, RefreshCcw } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const QueueStatus = () => {
   const [appointments, setAppointments] = useState([]);
@@ -14,7 +14,7 @@ const QueueStatus = () => {
 
   const fetchQueue = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/appointments');
+      const response = await api.get('/api/appointments');
       // Filter for today's confirmed appointments and sort by queue position
       const today = new Date().toISOString().split('T')[0];
       const activeQueue = response.data

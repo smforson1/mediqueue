@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, FolderOpen, LogOut, CalendarDays, Clock, CheckCircle2, XCircle, Search, Edit2, Phone, MoreHorizontal, UserCircle2 } from 'lucide-react';
-import axios from 'axios';
+import api from '../../api';
 
 const AdminDashboard = ({ onLogout }) => {
   const [stats, setStats] = useState(null);
@@ -17,7 +17,7 @@ const AdminDashboard = ({ onLogout }) => {
   const fetchDashboardData = async () => {
     try {
       // Fetch Stats
-      const statsRes = await axios.get('http://localhost:5000/api/stats');
+      const statsRes = await api.get('/api/stats');
       setStats({
         waiting: statsRes.data.confirmed, 
         appts: statsRes.data.totalBookings,
@@ -28,7 +28,7 @@ const AdminDashboard = ({ onLogout }) => {
       // Fetch Today's Queue
       // Using a static date for demo purposes since mock db dates might be old, 
       // but ideally this is new Date().toISOString().split('T')[0]
-      const apptsRes = await axios.get('http://localhost:5000/api/appointments');
+      const apptsRes = await api.get('/api/appointments');
       
       const activeAppts = apptsRes.data.filter(a => a.status === 'confirmed' || a.status === 'in_progress');
       const pendingAppts = apptsRes.data.filter(a => a.status === 'pending');
@@ -50,7 +50,7 @@ const AdminDashboard = ({ onLogout }) => {
   const handleCallPatient = async (pat) => {
     setCallingId(pat.id);
     try {
-      await axios.post(`http://localhost:5000/api/appointments/${pat.id}/call`);
+      await api.post(`/api/appointments/${pat.id}/call`);
       await fetchDashboardData();
     } catch (err) {
       console.error('Failed to call patient', err);
@@ -61,7 +61,7 @@ const AdminDashboard = ({ onLogout }) => {
 
   const handleCompleteAppointment = async (apptId) => {
     try {
-      await axios.post(`http://localhost:5000/api/appointments/${apptId}/complete`);
+      await api.post(`/api/appointments/${apptId}/complete`);
       await fetchDashboardData();
     } catch (err) {
       console.error('Failed to complete appointment', err);

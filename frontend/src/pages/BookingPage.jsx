@@ -5,7 +5,7 @@ import {
   AlertCircle, CheckCircle2, MapPin, Award, Stethoscope,
   Info, CalendarDays, Loader2
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const BookingPage = ({ user }) => {
   const [doctors, setDoctors] = useState([]);
@@ -28,7 +28,7 @@ const BookingPage = ({ user }) => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/doctors');
+        const response = await api.get('/api/doctors');
         setDoctors(response.data);
       } catch (err) {
         setError('Failed to load doctors. Please try again later.');
@@ -62,7 +62,7 @@ const BookingPage = ({ user }) => {
   const fetchBookedSlots = async () => {
     setIsSlotLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/appointments/booked`, {
+      const res = await api.get(`/api/appointments/booked`, {
         params: { doctorId: selectedDoctor.id, date: selectedDate }
       });
       setBookedTimes(res.data.bookedTimes || []);
@@ -86,7 +86,7 @@ const BookingPage = ({ user }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/appointments', {
+      const response = await api.post('/api/appointments', {
         doctorId: selectedDoctor.id,
         patientId: user.id,
         date: selectedDate,
